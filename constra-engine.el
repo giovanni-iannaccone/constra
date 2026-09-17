@@ -13,7 +13,6 @@
          (t 0)))
   (format "%d (0x%x)" value value))
 
-
 (defun constra-engine-group-flags-mask (group)
   "Return the OR of all known values in GROUP.
 
@@ -26,7 +25,6 @@ Zero-valued constants do not contribute to the mask."
           (setq mask
                 (logior mask value)))))))
 
-
 (defun constra-engine-group-exact-match (value group)
   "Return names whose value exactly matches VALUE.
 
@@ -36,7 +34,6 @@ This is useful for composite constants such as STATX_BASIC_STATS."
       (when (= value (cdr flag))
         (push (car flag) result)))
     (reverse result)))
-
 
 (defun constra-engine-group-decode-bitmask (value group)
   "Decode VALUE against bitmask GROUP.
@@ -56,15 +53,12 @@ Otherwise decompose VALUE into known bit flags."
           (let ((name (car flag))
                 (bits (cdr flag)))
 
-            ;; Zero is not a bit and must not participate
-            ;; in the decomposition.
             (when (and (> bits 0)
                        (= (logand value bits)
                           bits))
               (push name result))))
 
         (reverse result)))))
-
 
 (defun constra-engine-group-decode-enum (value group)
   "Decode VALUE against enum GROUP."
@@ -73,7 +67,6 @@ Otherwise decompose VALUE into known bit flags."
       (when (= value (cdr flag))
         (push (car flag) result)))
     (reverse result)))
-
 
 (defun constra-engine-group-decode-composite (value group)
   "Decode VALUE against composite GROUP.
@@ -99,7 +92,6 @@ but exact matches are preferred."
               (push name result))))
 
         (reverse result)))))
-
 
 (defun constra-engine-group-decode (value group)
   "Decode VALUE according to GROUP type."
@@ -127,13 +119,11 @@ but exact matches are preferred."
        value
        group)))))
 
-
 (defun constra-engine-group-expression (decoded)
   "Build an expression from DECODED names."
   (if decoded
       (mapconcat #'identity decoded " | ")
     "0"))
-
 
 (defun constra-engine-group-unknown (value group)
   "Return unknown bits in VALUE for bitmask GROUP."
@@ -143,13 +133,9 @@ but exact matches are preferred."
              (constra-engine-group-flags-mask
               group)))
 
-        ;; Bits present in VALUE but absent from all
-        ;; known flags.
         (logand value
                 (lognot known-mask)))
-
     0))
-
 
 (defun constra-engine-decode (value group)
   "Decode VALUE according to GROUP."
@@ -179,7 +165,6 @@ but exact matches are preferred."
 
      :unknown
      unknown)))
-
 
 (defun constra-engine-decode-groups (value groups)
   "Decode VALUE using GROUPS."
@@ -240,7 +225,6 @@ are considered."
 
     (reverse results)))
 
-
 (defun constra-engine-find-group
     (group-name &optional context-name)
   "Find groups named GROUP-NAME."
@@ -261,9 +245,7 @@ are considered."
                  (plist-get group :name))
 
             (push group results)))))
-
     (reverse results)))
-
 
 (defun constra-engine-decode-group
     (value group-name &optional context-name)
@@ -283,7 +265,6 @@ are considered."
    (constra-engine-find-group
     group-name
     context-name)))
-
 
 (defun constra-engine-compose-group
     (flag-names group)
@@ -315,7 +296,6 @@ are considered."
      (constra-engine-group-expression
       matched))))
 
-
 (defun constra-engine-compose
     (flag-names &optional context-name)
   "Compose FLAG-NAMES.
@@ -323,7 +303,6 @@ are considered."
 When CONTEXT-NAME is supplied, restrict the operation to
 that context."
   (let (results)
-
     (dolist (context constra-db)
 
       (when (or (null context-name)
@@ -369,14 +348,11 @@ that context."
                 (plist-get composed :expression))
 
                results))))))
-
     (reverse results)))
-
 
 (defun constra-engine-contexts ()
   "Return all registered context names."
   (constra-db-contexts))
-
 
 (provide 'constra-engine)
 
